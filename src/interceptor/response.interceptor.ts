@@ -4,6 +4,7 @@ import {
   Injectable,
   NestInterceptor,
 } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
 import { map, Observable } from "rxjs";
 
 export interface Response<T> {
@@ -14,7 +15,7 @@ export interface Response<T> {
 }
 
 @Injectable()
-export class TransformInterceptor<T>
+export class ResponseInterceptor<T>
   implements NestInterceptor<T, Response<T>>
 {
   intercept(

@@ -19,20 +19,20 @@ export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Transform((param) => param.value.trim())
+  @Transform((param) => param.value?.trim())
   @Column({ type: "varchar", length: 100, comment: "이메일" })
   email: string;
 
-  @Transform((param) => param.value.trim())
+  @Transform((param) => param.value?.trim())
   @Column({ type: "varchar", length: 100, comment: "이름" })
   name: string;
 
-  @Transform((param) => param.value.trim())
+  @Transform((param) => param.value?.trim())
   @Column({ type: "varchar", length: 255, comment: "비밀번호" })
   password: string;
 
   // @Exclude()
-  @Transform((param) => param.value.trim())
+  @Transform((param) => param.value?.trim())
   @Column({
     type: "varchar",
     length: 255,
@@ -60,7 +60,7 @@ export class UserEntity extends BaseEntity {
       this.password = await PasswordHash.encode(this.password);
     }
     if (this.refreshToken) {
-      this.refreshToken = await hash(this.refreshToken.trim(), 10);
+      this.refreshToken = await hash(this.refreshToken?.trim(), 10);
     }
   }
 }

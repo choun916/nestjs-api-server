@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
 import { ExistsException } from "../exceptions/exists.exception";
 import { UserRepository } from "./repository/user.repository";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -40,10 +40,7 @@ export class UsersService {
     let accessToken: string, refreshToken: string;
 
     try {
-      userProfileDto = await this.userRepository.profileByEmail(
-        loginUserDto.email
-      );
-
+      userProfileDto = await this.userRepository.profileByEmail(loginUserDto.email);
       accessToken = this.jwtService.sign(instanceToPlain(userProfileDto), {
         secret: this.configService.get("JWT_ACCESS_SECRET"),
         expiresIn: this.configService.get("JWT_ACCESS_EXPIRES_IN"),
@@ -58,11 +55,16 @@ export class UsersService {
         userProfileDto.email,
         refreshToken
       );
-    } catch (e) {
+    } catch (error) {
+      Logger.error(error);
       throw new BadRequestException();
     }
 
     return { accessToken, refreshToken };
+  }
+
+  async logout(userId: number): Promise<void> {
+    this.userRepository.removeRefreshToken(userId);
   }
 
   /**
