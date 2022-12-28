@@ -5,10 +5,10 @@ dotenv.config({
 });
 
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { AppModule } from "src/app/app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { WinstonModule } from "nest-winston";
-import { winstonConfig } from "./config/winston.config";
+import { winstonConfig } from "src/app/config/winston.config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {

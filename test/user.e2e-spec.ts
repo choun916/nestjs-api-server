@@ -1,15 +1,15 @@
-import { envConfig } from "src/config/env.config";
+import { envConfig } from "src/app/config/env.config";
 import { INestApplication } from "@nestjs/common";
 import { TestingModule, Test } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import * as request from "supertest";
-import { typeORMConfig } from "../src/config/typeorm.config";
-import { UsersModule } from "../src/users/users.module";
-import { CreateUserDto } from "../src/users/dto/create-user.dto";
+import { typeORMConfig } from "src/app/config/typeorm.config";
+import { UsersModule } from "src/app/users.module";
+import { CreateUserDto } from "src/app/dto/users/create-user.dto";
 import { WinstonModule } from "nest-winston";
-import { winstonConfig } from "src/config/winston.config";
+import { winstonConfig } from "src/app/config/winston.config";
 import { ConfigModule } from "@nestjs/config";
-import { LoginUserDto } from "src/users/dto/login-user.dto";
+import { LoginUserDto } from "src/app/dto/users/login-user.dto";
 
 describe('회원 /user', () => {
   const user = {
@@ -54,6 +54,8 @@ describe('회원 /user', () => {
       .then(({ body }) => {
         const { status, data: { accessToken, refreshToken } } = body;
         expect(status).toEqual('OK');
+        expect(accessToken).toBeDefined();
+        expect(refreshToken).toBeDefined();
         expect(typeof accessToken).toEqual('string');
         expect(typeof refreshToken).toEqual('string');
 

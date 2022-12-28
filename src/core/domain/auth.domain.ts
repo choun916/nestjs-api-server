@@ -1,9 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { JwtService, JwtSignOptions } from "@nestjs/jwt";
 import { instanceToPlain } from "class-transformer";
-import { string } from "joi";
-import { UserProfileDto } from "src/users/dto/user-profile.dto";
+import { UserProfileDto } from "src/app/dto/users/user-profile.dto";
 
 interface AuthInterface {
   createAccessToken(userProfileDto: UserProfileDto): string;
