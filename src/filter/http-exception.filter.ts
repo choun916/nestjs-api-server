@@ -4,7 +4,6 @@ import { WinstonLogger, WINSTON_MODULE_PROVIDER } from "nest-winston";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: WinstonLogger;
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -17,13 +16,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const response = (exception as HttpException).getResponse();
 
-    this.logger.error(
-      JSON.stringify({
-        url: req.url,
-        response,
-        // stack: exception.stack
-      })
-    );
+    // this.logger.error(
+    //   JSON.stringify({
+    //     url: req.url,
+    //     response,
+    //     // stack: exception.stack
+    //   })
+    // );
 
     res.status((exception as HttpException).getStatus()).json({
       statusCode: response["statusCode"],

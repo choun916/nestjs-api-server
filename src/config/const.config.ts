@@ -3,5 +3,5 @@ interface ConstConfig {
 };
 
 export const constConfig: ConstConfig = {
-  NODE_ENV_LIST: ['development', 'patch', 'stage', 'production']
+  NODE_ENV_LIST: ['development', 'test', 'patch', 'stage', 'production']
 }

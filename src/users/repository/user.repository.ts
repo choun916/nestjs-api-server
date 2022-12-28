@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Logger,
   HttpException,
   HttpStatus,
@@ -26,7 +25,11 @@ export class UserRepository {
   }
 
   async existsByEmail(email: string): Promise<boolean> {
-    return (await this.repository.countBy({ email })) > 0;
+    try{
+      return (await this.repository.countBy({ email })) > 0;
+    } catch(error){
+      throw error;
+    }
   }
 
   async passwordByEmail(email: string): Promise<string> {
@@ -63,5 +66,10 @@ export class UserRepository {
     await this.repository.update(userId, {
       refreshToken: null
     });
+  }
+
+  async delete(userId: number): Promise<void> {
+    Logger.log({ userId }, "UserRepository.delete");
+    await this.repository.delete(userId);
   }
 }

@@ -9,17 +9,39 @@ import { JwtService } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { LocalStrategy } from "src/auth/local.strategy";
 import { AccessJwtStrategy } from "src/auth/access-jwt.strategy";
+import { Auth, AuthOptions } from "src/core/domain/auth.domain";
+
+const authOptions: AuthOptions = {
+  JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
+  JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+  JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
+}
 
 @Module({
-  imports: [PassportModule, TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    PassportModule,
+    TypeOrmModule.forFeature([UserEntity]),
+    {
+      module: Auth,
+      providers: [
+        JwtService,
+        {
+          provide: 'authOptions',
+          useValue: authOptions
+        }
+      ],
+      exports: [Auth]
+    }
+  ],
   controllers: [UsersController],
   providers: [
     ConfigService,
     UsersService,
     UserRepository,
-    JwtService,
+    // JwtService,
     LocalStrategy,
-    AccessJwtStrategy,
+    AccessJwtStrategy
   ],
 })
 export class UsersModule { }

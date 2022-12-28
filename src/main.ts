@@ -9,11 +9,13 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { WinstonModule } from "nest-winston";
 import { winstonConfig } from "./config/winston.config";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonConfig),
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -22,6 +24,16 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     })
   );
-  await app.listen(3000);
+
+  const config = new DocumentBuilder()
+    .setTitle('API Document')
+    .setDescription('The API description')
+    .setVersion('1.0')
+
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
+
+  await app.listen(process.env.NODE_APP_PORT);
 }
 bootstrap();

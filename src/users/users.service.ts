@@ -6,16 +6,17 @@ import { LoginUserDto } from "./dto/login-user.dto";
 import { UserProfileDto } from "./dto/user-profile.dto";
 import { UserTokenDto } from "./dto/user-access-token.dto";
 import { JwtService } from "@nestjs/jwt";
-import { instanceToPlain } from "class-transformer";
 import { ConfigService } from "@nestjs/config";
 import { PasswordHash } from "src/utils/password.hash";
+import { Auth } from "src/core/domain/auth.domain";
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(UserRepository) private userRepository: UserRepository,
-    private configService: ConfigService,
-    private jwtService: JwtService
+    // private configService: ConfigService,
+    // private jwtService: JwtService,
+    private auth: Auth
   ) { }
 
   /**
@@ -41,20 +42,9 @@ export class UsersService {
 
     try {
       userProfileDto = await this.userRepository.profileByEmail(loginUserDto.email);
-      accessToken = this.jwtService.sign(instanceToPlain(userProfileDto), {
-        secret: this.configService.get("JWT_ACCESS_SECRET"),
-        expiresIn: this.configService.get("JWT_ACCESS_EXPIRES_IN"),
-      });
-
-      refreshToken = this.jwtService.sign(instanceToPlain(userProfileDto), {
-        secret: this.configService.get("JWT_REFRESH_SECRET"),
-        expiresIn: this.configService.get("JWT_REFRESH_EXPIRES_IN"),
-      });
-
-      await this.userRepository.updateRefreshToken(
-        userProfileDto.email,
-        refreshToken
-      );
+      accessToken = this.auth.createAccessToken(userProfileDto);
+      refreshToken = this.auth.createRefreshToken(userProfileDto);
+      await this.userRepository.updateRefreshToken(userProfileDto.email, refreshToken);
     } catch (error) {
       Logger.error(error);
       throw new BadRequestException();
@@ -73,11 +63,16 @@ export class UsersService {
    * @returns
    */
   async validateUser(loginUserDto: LoginUserDto): Promise<boolean> {
-    const password = await this.userRepository.passwordByEmail(
-      loginUserDto.email
-    );
-    return (
-      (await PasswordHash.verify(loginUserDto.password, password)) === true
-    );
+    const password = await this.userRepository.passwordByEmail(loginUserDto.email);
+    return await PasswordHash.verify(loginUserDto.password, password);
   }
+
+  /**
+   * 
+   * @param userId 
+   */
+  async delete(userId: number): Promise<void> {
+    await this.userRepository.delete(userId);
+  }
+
 }

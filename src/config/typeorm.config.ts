@@ -21,6 +21,6 @@ export const typeORMConfig: TypeOrmModuleOptions = {
     ],
   },
   logging: true,
-  entities: ["dist/**/*.entity.{ts,js}"],
   synchronize: false,
+  autoLoadEntities: true
 };

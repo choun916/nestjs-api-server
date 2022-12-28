@@ -4,9 +4,9 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { plainToInstance } from "class-transformer";
 import { UserProfileDto } from "src/users/dto/user-profile.dto";
-
+const ACCESS_JWT = 'access-jwt'; 
 @Injectable()
-export class AccessJwtStrategy extends PassportStrategy(Strategy, "access-jwt") {
+export class AccessJwtStrategy extends PassportStrategy(Strategy, ACCESS_JWT) {
   /**
    *
    * @param configService
@@ -25,7 +25,7 @@ export class AccessJwtStrategy extends PassportStrategy(Strategy, "access-jwt") 
    * @returns
    */
   async validate(payload: any): Promise<any> {
-    Logger.log([payload], "AccessJwtStrategy.validate");
+    Logger.log(payload, "AccessJwtStrategy.validate");
     return plainToInstance(UserProfileDto, payload);
   }
 }

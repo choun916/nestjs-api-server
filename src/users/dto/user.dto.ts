@@ -28,6 +28,7 @@ export class UserDto {
   @Transform((param) => param.value.trim())
   name: string;
 
+  @Expose()
   @IsString()
   @IsNotEmpty()
   @Transform((param) => param.value.trim())
