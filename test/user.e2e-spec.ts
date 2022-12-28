@@ -1,9 +1,4 @@
-import * as dotenv from "dotenv";
-import * as path from "path";
-dotenv.config({
-  path: path.resolve(`.env.${process.env.NODE_ENV}`),
-});
-
+import { envConfig } from "src/config/env.config";
 import { INestApplication } from "@nestjs/common";
 import { TestingModule, Test } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -14,8 +9,6 @@ import { CreateUserDto } from "../src/users/dto/create-user.dto";
 import { WinstonModule } from "nest-winston";
 import { winstonConfig } from "src/config/winston.config";
 import { ConfigModule } from "@nestjs/config";
-import * as Joi from "joi";
-import { constConfig } from "src/config/const.config";
 import { LoginUserDto } from "src/users/dto/login-user.dto";
 
 describe('회원 /user', () => {
@@ -32,25 +25,9 @@ describe('회원 /user', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        TypeOrmModule.forRoot(typeORMConfig),
+        ConfigModule.forRoot(envConfig),
         WinstonModule.forRoot(winstonConfig),
-        ConfigModule.forRoot({
-          validationSchema: Joi.object({
-            NODE_ENV: Joi.valid(...constConfig.NODE_ENV_LIST).required(),
-            DB_MASTER_HOST: Joi.string().valid().required(),
-            DB_MASTER_USERNAME: Joi.string().required(),
-            DB_MASTER_PASSWORD: Joi.string().required(),
-            DB_MASTER_DATABASE: Joi.string().required(),
-            DB_SLAVE_HOST: Joi.string().required(),
-            DB_SLAVE_USERNAME: Joi.string().required(),
-            DB_SLAVE_PASSWORD: Joi.string().required(),
-            DB_SLAVE_DATABASE: Joi.string().required(),
-            JWT_ACCESS_SECRET: Joi.string().required(),
-            JWT_ACCESS_EXPIRES_IN: Joi.string().required(),
-            JWT_REFRESH_SECRET: Joi.string().required(),
-            JWT_REFRESH_EXPIRES_IN: Joi.string().required()
-          })
-        }),
+        TypeOrmModule.forRoot(typeORMConfig),
         UsersModule,
       ],
     }).compile();
