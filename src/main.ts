@@ -1,9 +1,3 @@
-import * as dotenv from "dotenv";
-import * as path from "path";
-dotenv.config({
-  path: path.resolve(`.env.${process.env.NODE_ENV}`),
-});
-
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "src/app/app.module";
 import { ValidationPipe } from "@nestjs/common";

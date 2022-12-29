@@ -27,7 +27,6 @@ export class AccessJwtStrategy extends PassportStrategy(Strategy, ACCESS_JWT) {
    * @returns
    */
   async validate(payload: any): Promise<any> {
-    Logger.log(payload, "AccessJwtStrategy.validate");
     return plainToInstance(UserProfileDto, payload);
   }
 }

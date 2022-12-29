@@ -1,6 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, InternalServerErrorException, } from "@nestjs/common";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger, InternalServerErrorException, } from "@nestjs/common";
 import { Request, Response } from "express";
-import { WinstonLogger, WINSTON_MODULE_PROVIDER } from "nest-winston";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -10,19 +9,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
 
+    console.log('HttpExceptionFilter', exception);
     if (!(exception instanceof HttpException)) {
       exception = new InternalServerErrorException();
     }
 
     const response = (exception as HttpException).getResponse();
 
-    // this.logger.error(
-    //   JSON.stringify({
-    //     url: req.url,
-    //     response,
-    //     // stack: exception.stack
-    //   })
-    // );
+    Logger.error(
+      JSON.stringify({
+        url: req.url,
+        response,
+        stack: exception.stack
+      })
+    );
 
     res.status((exception as HttpException).getStatus()).json({
       statusCode: response["statusCode"],

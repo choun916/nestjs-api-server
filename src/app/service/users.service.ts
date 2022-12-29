@@ -4,19 +4,15 @@ import { UserRepository } from "src/app/repository/users.repository";
 import { CreateUserDto } from "src/app/dto/users/create-user.dto";
 import { LoginUserDto } from "src/app/dto/users/login-user.dto";
 import { UserProfileDto } from "src/app/dto/users//user-profile.dto";
-import { UserTokenDto } from "src/app/dto/users//user-access-token.dto";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
+import { UserTokenDto } from "src/app/dto/users//user-access-token.dto";;
 import { PasswordHash } from "src/core/utils/password.hash";
 import { Auth } from "src/core/domain/auth.domain";
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject(UserRepository) private userRepository: UserRepository,
-    // private configService: ConfigService,
-    // private jwtService: JwtService,
-    private auth: Auth
+    private readonly userRepository: UserRepository,
+    private readonly auth: Auth
   ) { }
 
   /**

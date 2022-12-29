@@ -7,8 +7,8 @@ import { UserRepository } from "./repository/users.repository";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
-import { LocalStrategy } from "src/app/guard/auth/local.strategy";
-import { AccessJwtStrategy } from "src/app/guard/auth/access-jwt.strategy";
+import { LocalStrategy } from "src/app/guards/auth/local.strategy";
+import { AccessJwtStrategy } from "src/app/guards/auth/access-jwt.strategy";
 import { Auth, AuthOptions } from "src/core/domain/auth.domain";
 
 const authOptions: AuthOptions = {
