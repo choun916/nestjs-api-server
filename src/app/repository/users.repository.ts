@@ -1,75 +1,63 @@
-import {
-  Logger,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "../entities/user.entity";
-import { CreateUserDto } from "src/app/dto/users/create-user.dto";
-import { Repository } from "typeorm";
-import { UserProfileDto } from "src/app/dto/users/user-profile.dto";
-import { instanceToPlain, plainToInstance } from "class-transformer";
+import { Injectable } from "@nestjs/common";
+import { UserEntity } from "src/app/entities/user.entity";
+import { DataSource } from "typeorm";
+import { UsersAbstractRepository } from "./users.abstract.repository";
 
 @Injectable()
-export class UserRepository {
-  constructor(
-    @InjectRepository(UserEntity)
-    private readonly repository: Repository<UserEntity>
-  ) { }
+export class UserRepository extends UsersAbstractRepository {
 
-  async profileByEmail(email: string): Promise<UserProfileDto> {
-    const data = instanceToPlain(await this.repository.findOneBy({ email }));
-    Logger.log(data, 'UserRepository.profileByEmail');
-    return plainToInstance(UserProfileDto, data);
+  constructor(protected dataSource: DataSource) {
+    super(UserEntity, dataSource);
   }
 
-  async existsByEmail(email: string): Promise<boolean> {
-    try {
-      return (await this.repository.countBy({ email })) > 0;
-    } catch (error) {
-      throw error;
-    }
-  }
+  // async profileByEmail(email: string): Promise<UserProfileDto> {
+  //   const data = instanceToPlain(await this.findOneBy({ email }));
+  //   return plainToInstance(UserProfileDto, data);
+  // }
 
-  async passwordByEmail(email: string): Promise<string> {
-    const { password } = await this.repository.findOneBy({ email });
-    if (!password) {
-      throw new Error("bad request");
-    }
-    return password;
-  }
+  // async existsByEmail(email: string): Promise<boolean> {
+  //   try {
+  //     return (await this.countBy({ email })) > 0;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
-  async create({ email, name, password }: CreateUserDto): Promise<boolean> {
-    try {
-      const createdAt = new Date(), updatedAt = new Date();
-      await this.repository.save(
-        this.repository.create({ email, name, password, createdAt, updatedAt }),
-        { reload: false });
-    } catch (error) {
-      throw new HttpException(
-        `[${error.errno}:${error.code}] ${error.name} - ${error.message}`,
-        HttpStatus.BAD_REQUEST
-      );
-    }
-    return true;
-  }
+  // async passwordByEmail(email: string): Promise<string> {
+  //   const { password } = await this.findOneBy({ email });
+  //   if (!password) {
+  //     throw new Error("bad request");
+  //   }
+  //   return password;
+  // }
 
-  async updateRefreshToken(email: string, refreshToken: string): Promise<void> {
-    const userEntity: UserEntity = this.repository.create({ refreshToken });
-    Logger.log(userEntity, "UserRepository.updateRefreshToken");
-    await this.repository.update({ email }, userEntity);
-  }
+  // async create({ email, name, password }: CreateUserDto): Promise<boolean> {
+  //   try {
+  //     const createdAt = new Date(), updatedAt = new Date();
+  //     await this.save(
+  //       this.manager.create(UserEntity, { email, name, password, createdAt, updatedAt }),
+  //       { reload: false }
+  //     );
+  //   } catch (error) {
+  //     throw new HttpException(
+  //       `[${error.errno}:${error.code}] ${error.name} - ${error.message}`,
+  //       HttpStatus.BAD_REQUEST
+  //     );
+  //   }
+  //   return true;
+  // }
 
-  async removeRefreshToken(userId: number): Promise<void> {
-    Logger.log({ userId }, "UserRepository.removeRefreshToken");
-    await this.repository.update(userId, {
-      refreshToken: null
-    });
-  }
+  // async updateRefreshToken(email: string, refreshToken: string): Promise<void> {
+  //   await this.update({ email }, this.manager.create(UserEntity, { refreshToken }));
+  // }
 
-  async delete(userId: number): Promise<void> {
-    Logger.log({ userId }, "UserRepository.delete");
-    await this.repository.delete(userId);
-  }
+  // async removeRefreshToken(userId: number): Promise<void> {
+  //   await this.update(userId, {
+  //     refreshToken: null
+  //   });
+  // }
+
+  // async deleteById(userId: number): Promise<void> {
+  //   await this.delete(userId);
+  // }
 }

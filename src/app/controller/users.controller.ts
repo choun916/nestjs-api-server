@@ -3,14 +3,14 @@ import { UsersService } from "src/app/service/users.service";
 import { CreateUserDto } from "src/app/dto/users/create-user.dto";
 import { UpdateUserDto } from "src/app/dto/users/update-user.dto";
 import { LoginUserDto } from "src/app/dto/users/login-user.dto";
-import { UserTokenDto } from "src/app/dto/users/user-access-token.dto";
+import { AuthTokenDto } from "src/app/dto/auth/auth-token.dto";
 import { UserProfileDto } from "src/app/dto/users/user-profile.dto";
 import { RestApiController } from "src/app/controller/rest-api.controller";
 import { LocalAuthGuard } from "src/app/guards/auth/local-auth.guard";
 import { Public } from "src/app/decorator/public.decorator";
 import { Response } from "express";
 import { AuthTokenInterceptor } from "src/app/interceptors/auth-token.interceptor";
-import { ApiCreatedResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('user')
 @Controller("user")
@@ -32,7 +32,7 @@ export class UsersController extends RestApiController {
   @UseGuards(LocalAuthGuard)
   @UseInterceptors(AuthTokenInterceptor)
   @Post("login")
-  async login(@Body() loginUserDto: LoginUserDto): Promise<UserTokenDto> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<AuthTokenDto> {
     return await this.usersService.login(loginUserDto);
   }
 

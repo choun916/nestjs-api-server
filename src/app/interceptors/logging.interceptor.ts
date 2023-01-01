@@ -23,10 +23,18 @@ export class LoggerInterceptor implements NestInterceptor {
     const ctx = context.switchToHttp();
     const req = ctx.getRequest();
     const res = ctx.getResponse<Response>();
-    const { params, query, body, headers, user, method, url } = req;
+    const { params, query, body, headers: { host, authorization }, user, method, url } = req;
     const pathname: string = url.split('?')[0];
 
-    this.logger.debug(`Request [${method}] ${pathname}`, { pathname, headers, query, params, body, user });
+    this.logger.debug(`Request [${method}] ${pathname}`, {
+      pathname,
+      query,
+      params,
+      body,
+      user,
+      host,
+      authorization 
+    });
 
     return next
       .handle()

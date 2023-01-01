@@ -1,12 +1,5 @@
 import { Exclude, Expose, Transform } from "class-transformer";
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Length,
-  Matches,
-} from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsString, Length, Matches } from "class-validator";
 
 @Exclude()
 export class UserDto {
@@ -24,7 +17,7 @@ export class UserDto {
   @IsString()
   @IsNotEmpty()
   @Length(1, 100)
-  @Matches(/^[a-z가-힣0-9\s]*$/i)
+  @Matches(/^[a-z가-힣0-9.'\s]*$/i)
   @Transform((param) => param.value.trim())
   name: string;
 

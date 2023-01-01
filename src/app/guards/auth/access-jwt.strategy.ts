@@ -5,14 +5,8 @@ import { ConfigService } from "@nestjs/config";
 import { plainToInstance } from "class-transformer";
 import { UserProfileDto } from "src/app/dto/users/user-profile.dto";
 
-const ACCESS_JWT = 'access-jwt';
-
 @Injectable()
-export class AccessJwtStrategy extends PassportStrategy(Strategy, ACCESS_JWT) {
-  /**
-   *
-   * @param configService
-   */
+export class AccessJwtStrategy extends PassportStrategy(Strategy, 'access-jwt') {
   constructor(private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -21,11 +15,6 @@ export class AccessJwtStrategy extends PassportStrategy(Strategy, ACCESS_JWT) {
     });
   }
 
-  /**
-   *
-   * @param payload
-   * @returns
-   */
   async validate(payload: any): Promise<any> {
     return plainToInstance(UserProfileDto, payload);
   }

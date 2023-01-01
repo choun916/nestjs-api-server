@@ -3,13 +3,11 @@ import * as path from "path";
 dotenv.config({
   path: path.resolve(`.env.${process.env.NODE_ENV}`),
 });
-// console.log('#########################', process.env.DB_MASTER_USERNAME);
 import { ConfigModuleOptions } from "@nestjs/config";
 import * as Joi from "joi";
 import { constConfig } from "./const.config";
 
 export const envConfig: ConfigModuleOptions = {
-  // envFilePath: path.resolve(`.env.${process.env.NODE_ENV}`),
   validationSchema: Joi.object({
     NODE_ENV: Joi.valid(...constConfig.NODE_ENV_LIST).required(),
     DB_MASTER_HOST: Joi.string().valid().required(),
